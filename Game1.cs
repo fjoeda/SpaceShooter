@@ -1,24 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpaceShooter.Objects;
 
 namespace SpaceShooter.Windows
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D planeTexture;
+        Pesawat plane;
+        KeyboardState keyboardState;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferHeight = 450;
-            graphics.PreferredBackBufferWidth = 900;
+            //set resolusi
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 450;
             graphics.ApplyChanges();
+            //set direktori konten
             Content.RootDirectory = "Content";
         }
 
@@ -43,9 +45,10 @@ namespace SpaceShooter.Windows
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            planeTexture = this.Content.Load<Texture2D>("png/player");
+            plane = new Pesawat(spriteBatch, Content.Load<Texture2D>("png/player"), new Vector2(225f, 450f), 120, 120,Content.Load<Texture2D>("png/laserGreenShot"));
 
             // TODO: use this.Content to load your game content here
+            keyboardState = Keyboard.GetState();
             
         }
 
@@ -69,9 +72,29 @@ namespace SpaceShooter.Windows
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            var dt = gameTime.ElapsedGameTime.TotalSeconds;
+            KeyboardState state = Keyboard.GetState();
+
             // TODO: Add your update logic here
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                plane.MoveRight(300*dt);
 
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+                plane.MoveLeft(300 * dt);
 
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+                plane.MoveUp(300 * dt);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                plane.MoveDown(300 * dt);
+            
+            if(state.IsKeyDown(Keys.Space) && !keyboardState.IsKeyDown(Keys.Space))
+            {
+                plane.Fire();
+            }
+            plane.LaunchBullet();
+
+            keyboardState = state;
             base.Update(gameTime);
         }
 
@@ -79,14 +102,17 @@ namespace SpaceShooter.Windows
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        [System.Obsolete]
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            plane.Draw();
+            foreach (Bullet bullet in plane.GetBullets())   
+            {
+                bullet.Draw();
+            }
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(planeTexture, origin: new Vector2(planeTexture.Width/2,planeTexture.Height/2),destinationRectangle: new Rectangle(100,50,64,64));
-            spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }

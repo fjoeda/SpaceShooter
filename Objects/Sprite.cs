@@ -5,25 +5,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace SpaceShooter.Objects
 {
     class Sprite
     {
-        SpriteBatch sp;
-        Texture2D texture;
-        Vector2 position;
+        public SpriteBatch sp;
+        public Texture2D texture;
+        public Vector2 position;
 
-        float angle, width, height;
+        public float angle, width, height;
 
-        public Sprite(Texture2D texture, Vector2 position, float width, float height)
+        public Sprite(SpriteBatch sp,Texture2D texture, Vector2 position, float width, float height)
         {
+            this.sp = sp;
             this.texture = texture;
             this.position = position;
             this.width = width;
             this.height = height;
+        }
+
+        public void SetAngle(float angle)
+        {
+            this.angle = angle;
         }
 
         [Obsolete]

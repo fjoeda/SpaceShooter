@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Objects\Pesawat.cs" />
     <Compile Include="Objects\Sprite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
